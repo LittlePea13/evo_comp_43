@@ -3,6 +3,7 @@ import org.vu.contest.ContestEvaluation;
 
 import java.util.Random;
 import java.util.Properties;
+import java.util.Arrays;
 
 public class player1 implements ContestSubmission
 {
@@ -13,8 +14,19 @@ public class player1 implements ContestSubmission
 	public player1()
 	{
 		rnd_ = new Random();
-	}
-	
+    }
+    
+    public static double[] newParent(){
+        Random rnd_ = new Random();
+        double maxX = 5.0f;
+        double minX = -5.0f;
+        double[] parent = new double[10];
+        for (int i = 0; i < parent.length; i++) {
+          parent[i] = rnd_.nextDouble() * (maxX - minX) + minX;
+        }
+        return(parent);
+    }
+
 	public void setSeed(long seed)
 	{
 		// Set seed of algortihms random process
@@ -49,14 +61,28 @@ public class player1 implements ContestSubmission
 		// Run your algorithm here
         
         int evals = 0;
+        int evaluations_limit_ = 10;
+        double[][] fitnessPop = new double[size][2];
         // init population
+        int size = 5;
+        double[][] population = new double[size][10];
+        for (int i = 0; i < population.length; i++) {
+          population[i] = newParent();
+        }
         // calculate fitness
+
+        for( int i = 0; i < popSize; i++){
+            fitnessPop[i][0] = (double) evaluation_.evaluate(population[i]);
+            fitnessPop[i][1] = i;
+        }
+
         while(evals<evaluations_limit_){
             // Select parents
             // Apply crossover / mutation operators
-            double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+            double child[] = newParent();
             // Check fitness of unknown fuction
             Double fitness = (double) evaluation_.evaluate(child);
+            System.out.println(fitness);
             evals++;
             // Select survivors
         }

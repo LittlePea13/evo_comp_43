@@ -15,17 +15,6 @@ public class player1 implements ContestSubmission
 	{
 		rnd_ = new Random();
     }
-    
-    public static double[] newParent(){
-        Random rnd_ = new Random();
-        double maxX = 5.0f;
-        double minX = -5.0f;
-        double[] parent = new double[10];
-        for (int i = 0; i < parent.length; i++) {
-          parent[i] = rnd_.nextDouble() * (maxX - minX) + minX;
-        }
-        return(parent);
-    }
 
 	public void setSeed(long seed)
 	{
@@ -66,9 +55,12 @@ public class player1 implements ContestSubmission
         // init population
         int size = 5;
         double[][] population = new double[size][10];
+        double[] sigmas = new double[size];
+
         for (int i = 0; i < population.length; i++) {
           population[i] = newParent();
         }
+
         // calculate fitness
 
         for( int i = 0; i < popSize; i++){

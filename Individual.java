@@ -4,6 +4,8 @@ import java.util.Random;
 public class Individual {
     double[] genome = new double[10];
     double fitness;
+    double sigma;
+    double sigmas;
 
     public Individual() {
         int leftLimit = -5;
@@ -19,6 +21,15 @@ public class Individual {
     public void setFitness(double fitness){
         this.fitness = fitness;
     }
+
+    public void setSigma(double sigma){
+        this.sigma = sigma;
+    }
+
+    public void setSigmas(double sigmas){
+        this.sigmas = sigmas;
+    }
+
 
     public double getFitness(){
         return fitness;

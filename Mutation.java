@@ -73,7 +73,7 @@ class NonUniformMutation extends Mutation{
     }
 }
 class NonUniformMutationPere extends Mutation{
-    public double[] mutate(double[] oldgenes, int index, float sigma){
+    public double[] mutate(double[] oldgenes, int index, double sigma, int size){
         Random r = new Random();
         double tau = 1/Math.sqrt(2*size);
         double gamma = Math.exp(tau*r.nextGaussian());
@@ -99,7 +99,7 @@ class NonUniformMutationPere extends Mutation{
 }
 
 class NStepNonUniformMutationPere extends Mutation{
-    public double[] mutate(double[] oldgenes, int index, float sigma){
+    public double[] mutate(double[] oldgenes, int index, double sigma, int size){
         Random r = new Random();
         double tau = 1/Math.sqrt(2*size);
         double gamma = Math.exp(tau*r.nextGaussian());

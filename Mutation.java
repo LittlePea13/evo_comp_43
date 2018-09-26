@@ -72,3 +72,62 @@ class NonUniformMutation extends Mutation{
 
     }
 }
+class NonUniformMutationPere extends Mutation{
+    public double mutateSigma(int size, double sigma){
+        Random r = new Random();
+        double tau = 1/Math.sqrt(2*size);
+        double gamma = Math.exp(tau*r.nextGaussian());
+        sigma = sigma*gamma;
+        return sigma;
+    }
+    public double[] mutate(double[] oldgenes, int index, float sigma){
+        Random r = new Random();
+        double gaussianValue = r.nextGaussian()*sigma;
+        // non-standard mean and std:
+        // r.nextGaussain() * std + mean
+
+        // ^ should prob. do this cause gaussian values can get pretty big rn
+
+        double[] newgenes = oldgenes.clone();
+        newgenes[index] += gaussianValue;
+        // new value must not extend bounds
+        if(newgenes[index] < lowerBound){
+            newgenes[index] = lowerBound;
+        }
+        else if(newgenes[index] > upperBound){
+            newgenes[index] = upperBound;
+        }
+        return newgenes;
+    }
+}
+
+class NStepNonUniformMutationPere extends Mutation{
+    public double[] mutateSigmas(int size, double[] sigmas){
+        Random r = new Random();
+        double tau = 1/Math.sqrt(2*size);
+        double gamma = Math.exp(tau*r.nextGaussian());
+        for (int i = 0; i < size; i++) {
+            sigmas[i] = sigmas[i]*gamma*Math.exp((1/Math.sqrt(2*Math.sqrt(size)))*r.nextGaussian());
+        }
+        return sigmas;
+    }
+    public double[] mutate(double[] oldgenes, int index, float sigma){
+        Random r = new Random();
+        double gaussianValue = r.nextGaussian()*sigma;
+        // non-standard mean and std:
+        // r.nextGaussain() * std + mean
+
+        // ^ should prob. do this cause gaussian values can get pretty big rn
+
+        double[] newgenes = oldgenes.clone();
+        newgenes[index] += gaussianValue;
+        // new value must not extend bounds
+        if(newgenes[index] < lowerBound){
+            newgenes[index] = lowerBound;
+        }
+        else if(newgenes[index] > upperBound){
+            newgenes[index] = upperBound;
+        }
+        return newgenes;
+    }
+}

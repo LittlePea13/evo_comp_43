@@ -51,7 +51,7 @@ public class player43 implements ContestSubmission
     
 	public void run()
 	{
-		// Run your algorithm here
+        // Run your algorithm here
 
         // Currently this is just a toy algorithm, with values, crossover and mutation chosen arbitrarily
         
@@ -111,9 +111,8 @@ public class player43 implements ContestSubmission
 
                 // mutate with prob
                 if (r.nextFloat() < 0.3) {
-                    child_genome = mutation.mutate(child_genome, 2);
+                    mutation.mutate(child, 2);
                 }
-                child.setGenome(child_genome);
                 Double fitness = (double) evaluation_.evaluate(child_genome);
                 evals++;
                 child.setFitness(fitness);

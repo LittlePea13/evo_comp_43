@@ -49,6 +49,31 @@ public class player43 implements ContestSubmission
         }
     }
     
+    public int rouletteSelection(double[] weight) 
+    {
+       // calculate the total weight
+        double weight_sum = 0;
+        for(int i=0; i<weight.length; i++) {
+            weight_sum += weight[i];
+        }
+        // get a random value
+        double value = randUniformPositive() * weight_sum;	
+        // locate the random value based on the weights
+        for(int i=0; i<weight.length; i++) {		
+            value -= weight[i];		
+            if(value < 0) return i;
+        }
+        // when rounding errors occur, we return the last item's index 
+        return weight.length - 1;
+    }
+
+    // Returns a uniformly distributed double value between 0.0 and 1.0
+    public double randUniformPositive() {
+        // easiest implementation
+        return new Random().nextDouble();
+    }
+        
+    
 	public void run()
 	{
 		// Run your algorithm here

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class player43 implements ContestSubmission
 {
@@ -72,6 +73,115 @@ public class player43 implements ContestSubmission
         // easiest implementation
         return new Random().nextDouble();
     }
+
+    public ArrayList<Individual> tournament(ArrayList<Individual> population,
+                              double naturalFitnessScores,
+                              int selectionSize)
+    {
+        ArrayList<Individual> selection = new ArrayList<Individual>(selectionSize);
+        for (int i = 0; i < selectionSize; i++)
+        {
+            // Pick two candidates at random.
+            Individual candidate1 = population.get(rnd_.nextInt(population.size()));
+            Individual candidate2 = population.get(rnd_.nextInt(population.size()));
+
+            // Use a random value to decide wether to select the fitter individual or the weaker one.
+            double selectFitter = randUniformPositive();
+            if (selectFitter > naturalFitnessScores)
+            {
+                // Select the fitter candidate.
+                selection.add(candidate2.fitness > candidate1.fitness
+                              ? candidate2
+                              : candidate1);
+            }
+            else
+            {
+                // Select the less fit candidate.
+                selection.add(candidate2.fitness > candidate1.fitness
+                              ? candidate1
+                              : candidate2);
+            }
+        }
+        return selection;
+    }
+
+
+    public ArrayList<Individual> StochasticUniversalSamplingFitness(ArrayList<Individual> population,
+                              int selectionSize)
+    {
+        // Calculate the sum of all fitness values.
+        double aggregateFitness = 0;
+        for (Individual candidate : population)
+        {
+            aggregateFitness += candidate.fitness; //should change this with function result?
+        }
+
+        ArrayList<Individual> selection = new ArrayList<Individual>(selectionSize);
+        // Pick a random offset between 0 and 1 as the starting point for selection.
+        double startOffset = rnd_.nextDouble();
+        double cumulativeExpectation = 0;
+        int index = 0;
+        for (Individual candidate : population)
+        {
+            // Calculate the number of times this candidate is expected to
+            // be selected on average and add it to the cumulative total
+            // of expected frequencies.
+            cumulativeExpectation += candidate.fitness/ aggregateFitness * selectionSize;
+
+            // If f is the expected frequency, the candidate will be selected at
+            // least as often as floor(f) and at most as often as ceil(f). The
+            // actual count depends on the random starting offset.
+            while (cumulativeExpectation > startOffset + index)
+            {
+                selection.add(candidate);
+                index++;
+            }
+        }
+        return selection;
+    }
+
+    public ArrayList<Individual> StochasticUniversalSampling(ArrayList<Individual> population,
+                              int selectionSize)
+    {
+        ArrayList<Individual> selection = new ArrayList<Individual>(selectionSize);
+        // Pick a random offset between 0 and 1 as the starting point for selection.
+        double startOffset = rnd_.nextDouble();
+        double cumulativeExpectation = 0;
+        int index = 0;
+        int rank = 0;
+        int populationSize = population.size();
+        for (Individual candidate : population)
+        {
+            // Calculate the number of times this candidate is expected to
+            // be selected on average and add it to the cumulative total
+            // of expected frequencies.
+            cumulativeExpectation += functionFio(rank,populationSize, 1.5) * selectionSize;
+
+            // If f is the expected frequency, the candidate will be selected at
+            // least as often as floor(f) and at most as often as ceil(f). The
+            // actual count depends on the random starting offset.
+            while (cumulativeExpectation > startOffset + index)
+            {
+                selection.add(candidate);
+                index++;
+            }
+        }
+        return selection;
+    }
+
+    public ArrayList<Individual> RouletteSampling(ArrayList<Individual> population,
+                              int selectionSize)
+    {
+        ArrayList<Individual> selection = new ArrayList<Individual>(selectionSize);
+        // Calculate the weights for whole population
+        double[] weights = Fiofunction2(population.size(), 1.5);
+        for (int i = 0; i < selectionSize; i++)
+        {        
+            selection.add(population.get(rouletteSelection(weights)));
+        }
+        return selection;
+    }
+
         
     
 	public void run()
@@ -156,6 +266,5 @@ public class player43 implements ContestSubmission
 
             population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
         }
-
 	}
 }

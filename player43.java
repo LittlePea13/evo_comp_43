@@ -262,7 +262,7 @@ public class player43 implements ContestSubmission
             // Double fitness = (double) evaluation_.evaluate(child);
             // Select survivors
             ArrayList<Individual> possibleSurvivors = new ArrayList<>();
-            possibleSurvivors.addAll(population);
+            //possibleSurvivors.addAll(population);
             possibleSurvivors.addAll(children);
 
             Collections.sort(possibleSurvivors,

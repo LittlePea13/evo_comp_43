@@ -160,11 +160,12 @@ public class player43 implements ContestSubmission
             // If f is the expected frequency, the candidate will be selected at
             // least as often as floor(f) and at most as often as ceil(f). The
             // actual count depends on the random starting offset.
-            while (cumulativeExpectation > startOffset + index)
+            while (cumulativeExpectation > index)
             {
                 selection.add(candidate);
                 index++;
             }
+            rank++;
         }
         return selection;
     }
@@ -219,37 +220,27 @@ public class player43 implements ContestSubmission
 
         evaluations_limit_ = evaluations_limit_ - populationSize;
         // - populationSize to make sure it doesn't go over limit during while loop
+        int runs = 0;
         while(evals<evaluations_limit_){
-            // calculate fitness
+            runs++;
+            // parent selection
 
             // sort population based on fitness
-            // TODO: check if correct.
             Collections.sort(population,
-                    Comparator.comparingDouble(Individual::getFitness).reversed());
-
-            // select best two parents
-            double best_fitness = population.get(0).fitness;
-            double second_best = population.get(1).fitness;
-
-           System.out.println(best_fitness + " " + second_best);
-
-            double[] parent1 = population.get(0).genome;
-            double[] parent2 = population.get(1).genome;
-
+                    Comparator.comparingDouble(Individual::getFitness));
+            ArrayList<Individual> parents = StochasticUniversalSampling(population, populationSize*2);
             // Apply crossover / mutation operators
             SimpleArithRecombination crossover = new SimpleArithRecombination();
             UniformMutation mutation = new UniformMutation();
             ArrayList<Individual> children = new ArrayList<>();
 
-//            System.out.println("parents:");
-//            System.out.println(Arrays.toString(parent1));
-//            System.out.println(Arrays.toString(parent2));
-//            System.out.println("Children");
             Random r = new Random();
-            for(int i=0; i<populationSize; i++) {
+            for(int i=0; i<populationSize*2; i++) {
                 int k = r.nextInt(10);
                 Individual child = new Individual();
                 double[] child_genome;
+                double[] parent1 = parents.get(i).genome;
+                double[] parent2 = parents.get(r.nextInt(populationSize*2)).genome;
                 if(i%2 ==0) {
                     child_genome = crossover.recombine(parent1, parent2, k);
                 }
@@ -258,7 +249,7 @@ public class player43 implements ContestSubmission
                 }
 
                 // mutate with prob
-                if (r.nextFloat() < 0.3) {
+                if (r.nextFloat() < 0.05) {
                     mutation.mutate(child, 2);
                 }
                 Double fitness = (double) evaluation_.evaluate(child_genome);
@@ -279,5 +270,6 @@ public class player43 implements ContestSubmission
 
             population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
         }
+        System.out.println(runs);
 	}
 }

@@ -182,7 +182,7 @@ public class player43 implements ContestSubmission
         return selection;
     }
 
-		public double[] LinearRankPop(int populationSize, double s){
+	public double[] LinearRankPop(int populationSize, double s){
       double[] p_linrank = new double[populationSize];
       for(int i=0; i<populationSize; i++){
         double prob = LinearRankInd(i, populationSize, s);
@@ -191,9 +191,9 @@ public class player43 implements ContestSubmission
       return p_linrank;
     }
 
-		public double LinearRankInd(int rank, int populationSize, double s){
-			return (2 - s)/(populationSize) + 2*rank*(s - 1)/(populationSize*(populationSize - 1));
-		}
+	public double LinearRankInd(int rank, int populationSize, double s){
+		return (2 - s)/(populationSize) + 2*rank*(s - 1)/(populationSize*(populationSize - 1));
+	}
 
 
 

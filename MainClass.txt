@@ -1,4 +1,2 @@
 
-Main-Class: player43 Individual Recombination Mutation DiscreteRecombination SimpleArithRecombination
-            SingleArithRecombination WholeArithRecombination UniformMutation NonUniformMutation
-
+Main-Class: player43 Individual Recombination Mutation DiscreteRecombination SimpleArithRecombination SingleArithRecombination WholeArithRecombination UniformMutation NonUniformMutation NStepNonUniformMutation SingleNonUniformMutation

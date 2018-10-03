@@ -15,12 +15,12 @@ public class player43 implements ContestSubmission
 	Random rnd_;
 	ContestEvaluation evaluation_;
     private int evaluations_limit_;
-	
+
 	public player43()
 	{
 		rnd_ = new Random();
 	}
-	
+
 	public void setSeed(long seed)
 	{
 		// Set seed of algortihms random process
@@ -31,7 +31,7 @@ public class player43 implements ContestSubmission
 	{
 		// Set evaluation problem used in the run
 		evaluation_ = evaluation;
-		
+
 		// Get evaluation properties
 		Properties props = evaluation.getProperties();
         // Get evaluation limit
@@ -49,8 +49,8 @@ public class player43 implements ContestSubmission
             // Do sth else
         }
     }
-    
-    public int rouletteSelection(double[] weight) 
+
+    public int rouletteSelection(double[] weight)
     {
        // calculate the total weight
         double weight_sum = 0;
@@ -58,13 +58,13 @@ public class player43 implements ContestSubmission
             weight_sum += weight[i];
         }
         // get a random value
-        double value = randUniformPositive() * weight_sum;	
+        double value = randUniformPositive() * weight_sum;
         // locate the random value based on the weights
-        for(int i=0; i<weight.length; i++) {		
-            value -= weight[i];		
+        for(int i=0; i<weight.length; i++) {
+            value -= weight[i];
             if(value < 0) return i;
         }
-        // when rounding errors occur, we return the last item's index 
+        // when rounding errors occur, we return the last item's index
         return weight.length - 1;
     }
 
@@ -155,7 +155,7 @@ public class player43 implements ContestSubmission
             // Calculate the number of times this candidate is expected to
             // be selected on average and add it to the cumulative total
             // of expected frequencies.
-            cumulativeExpectation += functionFio(rank,populationSize, 1.5) * selectionSize;
+            cumulativeExpectation += LinearRankInd(rank,populationSize, 1.5) * selectionSize;
 
             // If f is the expected frequency, the candidate will be selected at
             // least as often as floor(f) and at most as often as ceil(f). The
@@ -174,22 +174,35 @@ public class player43 implements ContestSubmission
     {
         ArrayList<Individual> selection = new ArrayList<Individual>(selectionSize);
         // Calculate the weights for whole population
-        double[] weights = Fiofunction2(population.size(), 1.5);
+        double[] weights = LinearRankPop(population.size(), 1.5);
         for (int i = 0; i < selectionSize; i++)
-        {        
+        {
             selection.add(population.get(rouletteSelection(weights)));
         }
         return selection;
     }
 
-        
-    
+		public double[] LinearRankPop(int populationSize, double s){
+      double[] p_linrank = new double[populationSize];
+      for(int i=0; i<populationSize; i++){
+        double prob = LinearRankInd(i, populationSize, s);
+        p_linrank[i] = prob;
+      }
+      return p_linrank;
+    }
+
+		public double LinearRankInd(int rank, int populationSize, double s){
+			return (2 - s)/(populationSize) + 2*rank*(s - 1)/(populationSize*(populationSize - 1));
+		}
+
+
+
 	public void run()
 	{
         // Run your algorithm here
 
         // Currently this is just a toy algorithm, with values, crossover and mutation chosen arbitrarily
-        
+
         int evals = 0;
         // init population
         int populationSize = 30;

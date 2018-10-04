@@ -238,13 +238,13 @@ public class player43 implements ContestSubmission
             WholeArithRecombination crossover = new WholeArithRecombination();
             NStepNonUniformMutation mutation = new NStepNonUniformMutation();
             ArrayList<Individual> children = new ArrayList<>();
-
             for(int i=0; i<populationSize*childrenFactor; i++) {
                 int k = rnd_.nextInt(10);
                 Individual child = new Individual();
                 double[] child_genome;
                 double[] parent1 = parents.get(i).genome;
-                double[] parent2 = parents.get(rouletteSelection(weights)).genome;
+                //double[] parent2 = parents.get(rouletteSelection(weights)).genome;
+                double[] parent2 = parents.get(rnd_.nextInt(populationSize*childrenFactor)).genome;
                 if(i%2 ==0) {
                     child_genome = crossover.recombine(parent1, parent2, k);
                 }
@@ -254,10 +254,33 @@ public class player43 implements ContestSubmission
                 child.setGenome(child_genome);
                 child.setAllSigmas(parents.get(i).sigmas, parents.get(i).sigmas);
                 child.setSigma(parents.get(i).sigma);
+                if(evals==evaluations_limit_/5){
+                    System.out.println("evaluations_limit_");
+                    double[] sigmas = {1,1,1,1,1,1,1,1,1,1};
+                    child.setAllSigmas(sigmas, sigmas);
+                }
+                if(evals==evaluations_limit_/4){
+                    System.out.println("evaluations_limit_2");
+                    double[] sigmas = {0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1};
+                    child.setAllSigmas(sigmas, sigmas);
+                }
+                if(evals==evaluations_limit_/3){
+                    System.out.println("evaluations_limit_3");
+                    double[] sigmas = {0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001};
+                    child.setAllSigmas(sigmas, sigmas);
+                }
+                if(evals==evaluations_limit_/2){
+                    System.out.println("evaluations_limit_3");
+                    double[] sigmas = {0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001};
+                    child.setAllSigmas(sigmas, sigmas);
+                }
                 // mutate with prob
-                while (rnd_.nextFloat() < 0.5) {
+                if (rnd_.nextFloat() < 0.02) {
                     int l = rnd_.nextInt(10);
-                    System.out.println(Arrays.toString(child.sigmas));
+                    /*System.out.println("fitness before");
+                    System.out.println(parents.get(i).fitness);
+                    System.out.println("before");
+                    System.out.println(Arrays.toString(child.sigmas));*/
                     //System.out.println(child.sigma);
                     mutation.mutate(child, l);
                     //System.out.println(child.sigma);
@@ -266,6 +289,7 @@ public class player43 implements ContestSubmission
                 Double fitness = (double) evaluation_.evaluate(child.genome);
                 evals++;
                 child.setFitness(fitness);
+                //System.out.println(fitness);
                 children.add(child);
             }
             //System.out.println(maxfitness);

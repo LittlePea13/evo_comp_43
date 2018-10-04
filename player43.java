@@ -207,7 +207,7 @@ public class player43 implements ContestSubmission
         int evals = 0;
         // init population
         int populationSize = 15;
-        int childrenFactor = 5;
+        int childrenFactor = 7;
         ArrayList<Individual> population = new ArrayList<>();
         for(int i=0; i<populationSize; i++){
             Individual ind = new Individual();
@@ -230,9 +230,13 @@ public class player43 implements ContestSubmission
             Collections.sort(population,
                     Comparator.comparingDouble(Individual::getFitness));
             ArrayList<Individual> parents = StochasticUniversalSampling(population, populationSize*childrenFactor);
+            // sort parents based on fitness
+            Collections.sort(parents,
+                    Comparator.comparingDouble(Individual::getFitness));
+            double[] weights = LinearRankPop(parents.size(), 1.5);
             // Apply crossover / mutation operators
             WholeArithRecombination crossover = new WholeArithRecombination();
-            UniformMutation mutation = new UniformMutation();
+            NStepNonUniformMutation mutation = new NStepNonUniformMutation();
             ArrayList<Individual> children = new ArrayList<>();
 
             for(int i=0; i<populationSize*childrenFactor; i++) {
@@ -240,29 +244,31 @@ public class player43 implements ContestSubmission
                 Individual child = new Individual();
                 double[] child_genome;
                 double[] parent1 = parents.get(i).genome;
-                double[] parent2 = parents.get(rnd_.nextInt(populationSize*childrenFactor)).genome;
+                double[] parent2 = parents.get(rouletteSelection(weights)).genome;
                 if(i%2 ==0) {
                     child_genome = crossover.recombine(parent1, parent2, k);
                 }
                 else{
                     child_genome = crossover.recombine(parent2, parent1, k);
                 }
-                child.setAllSigmas(parents.get(i).sigmas);
+                child.setGenome(child_genome);
+                child.setAllSigmas(parents.get(i).sigmas, parents.get(i).sigmas);
                 child.setSigma(parents.get(i).sigma);
                 // mutate with prob
-                if (rnd_.nextFloat() < 0.02) {
+                while (rnd_.nextFloat() < 0.5) {
                     int l = rnd_.nextInt(10);
-                    //System.out.println(Arrays.toString(child.sigmas));
+                    System.out.println(Arrays.toString(child.sigmas));
                     //System.out.println(child.sigma);
                     mutation.mutate(child, l);
                     //System.out.println(child.sigma);
                     //System.out.println(Arrays.toString(child.sigmas));
                 }
-                Double fitness = (double) evaluation_.evaluate(child_genome);
+                Double fitness = (double) evaluation_.evaluate(child.genome);
                 evals++;
                 child.setFitness(fitness);
                 children.add(child);
             }
+            //System.out.println(maxfitness);
             //double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
             // Check fitness of unknown fuction
             // Double fitness = (double) evaluation_.evaluate(child);
@@ -270,17 +276,18 @@ public class player43 implements ContestSubmission
             ArrayList<Individual> possibleSurvivors = new ArrayList<>();
             //possibleSurvivors.addAll(population);
             possibleSurvivors.addAll(children);
-            /*
+
             Collections.sort(possibleSurvivors,
                     Comparator.comparingDouble(Individual::getFitness).reversed());
 
             population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
-            */
+            
+            /*
             Collections.sort(children,
                 Comparator.comparingDouble(Individual::getFitness));
 
-            population = StochasticUniversalSampling(children, populationSize);
-
+            population = tournament(children, 0.3,populationSize);
+*/
         }
         //System.out.println(runs);
 	}

@@ -10,7 +10,7 @@ public class Recombination{
 
         DiscreteRecombination DR = new DiscreteRecombination();
         DR.setGenomeSize(parent1.length);
-        double[] child = DR.recombine(parent1, parent2);
+        double[] child = DR.recombine(parent1, parent2, 2);
         System.out.println("Discrete Recombination:");
         System.out.println(Arrays.toString(child));
 
@@ -36,7 +36,7 @@ public class Recombination{
         ///////////////////////////////////////
         WholeArithRecombination WAR = new WholeArithRecombination();
         WAR.setGenomeSize(parent1.length);
-        double[] child5 = WAR.recombine(parent1, parent2);
+        double[] child5 = WAR.recombine(parent1, parent2,2);
         System.out.println("Whole Arithmetic Recombination");
         System.out.println(Arrays.toString(child5));
 
@@ -53,7 +53,7 @@ public class Recombination{
 }
 
 class DiscreteRecombination extends Recombination{
-    public double[] recombine(double[] parentA, double[] parentB){
+    public double[] recombine(double[] parentA, double[] parentB, int k){
         Random r = new Random();
         double[] child = new double[genomeSize];
         for(int i=0; i<genomeSize; i++){
@@ -89,7 +89,7 @@ class SingleArithRecombination extends Recombination{
 }
 
 class WholeArithRecombination extends Recombination{
-    public double[] recombine(double[] parentA, double[] parentB){
+    public double[] recombine(double[] parentA, double[] parentB, int k){
         double[] child = new double[genomeSize];
         for (int i=0; i<genomeSize; i++){
             child[i] = (parentA[i]+parentB[i])/2;

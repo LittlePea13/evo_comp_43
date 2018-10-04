@@ -71,7 +71,7 @@ public class player43 implements ContestSubmission
     // Returns a uniformly distributed double value between 0.0 and 1.0
     public double randUniformPositive() {
         // easiest implementation
-        return new Random().nextDouble();
+        return rnd_.nextDouble();
     }
 
     public ArrayList<Individual> tournament(ArrayList<Individual> population,
@@ -206,7 +206,8 @@ public class player43 implements ContestSubmission
 
         int evals = 0;
         // init population
-        int populationSize = 30;
+        int populationSize = 15;
+        int childrenFactor = 5;
         ArrayList<Individual> population = new ArrayList<>();
         for(int i=0; i<populationSize; i++){
             Individual ind = new Individual();
@@ -228,29 +229,34 @@ public class player43 implements ContestSubmission
             // sort population based on fitness
             Collections.sort(population,
                     Comparator.comparingDouble(Individual::getFitness));
-            ArrayList<Individual> parents = StochasticUniversalSampling(population, populationSize*2);
+            ArrayList<Individual> parents = StochasticUniversalSampling(population, populationSize*childrenFactor);
             // Apply crossover / mutation operators
-            SimpleArithRecombination crossover = new SimpleArithRecombination();
+            WholeArithRecombination crossover = new WholeArithRecombination();
             UniformMutation mutation = new UniformMutation();
             ArrayList<Individual> children = new ArrayList<>();
 
-            Random r = new Random();
-            for(int i=0; i<populationSize*2; i++) {
-                int k = r.nextInt(10);
+            for(int i=0; i<populationSize*childrenFactor; i++) {
+                int k = rnd_.nextInt(10);
                 Individual child = new Individual();
                 double[] child_genome;
                 double[] parent1 = parents.get(i).genome;
-                double[] parent2 = parents.get(r.nextInt(populationSize*2)).genome;
+                double[] parent2 = parents.get(rnd_.nextInt(populationSize*childrenFactor)).genome;
                 if(i%2 ==0) {
                     child_genome = crossover.recombine(parent1, parent2, k);
                 }
                 else{
                     child_genome = crossover.recombine(parent2, parent1, k);
                 }
-
+                child.setAllSigmas(parents.get(i).sigmas);
+                child.setSigma(parents.get(i).sigma);
                 // mutate with prob
-                if (r.nextFloat() < 0.05) {
-                    mutation.mutate(child, 2);
+                if (rnd_.nextFloat() < 0.02) {
+                    int l = rnd_.nextInt(10);
+                    //System.out.println(Arrays.toString(child.sigmas));
+                    //System.out.println(child.sigma);
+                    mutation.mutate(child, l);
+                    //System.out.println(child.sigma);
+                    //System.out.println(Arrays.toString(child.sigmas));
                 }
                 Double fitness = (double) evaluation_.evaluate(child_genome);
                 evals++;
@@ -264,12 +270,18 @@ public class player43 implements ContestSubmission
             ArrayList<Individual> possibleSurvivors = new ArrayList<>();
             //possibleSurvivors.addAll(population);
             possibleSurvivors.addAll(children);
-
+            /*
             Collections.sort(possibleSurvivors,
                     Comparator.comparingDouble(Individual::getFitness).reversed());
 
             population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
+            */
+            Collections.sort(children,
+                Comparator.comparingDouble(Individual::getFitness));
+
+            population = StochasticUniversalSampling(children, populationSize);
+
         }
-        System.out.println(runs);
+        //System.out.println(runs);
 	}
 }

@@ -247,6 +247,7 @@ public class player43 implements ContestSubmission
                 else{
                     child_genome = crossover.recombine(parent2, parent1, k);
                 }
+                child.setGenome(child_genome);
 
                 // mutate with prob
                 if (r.nextFloat() < 0.05) {
@@ -261,14 +262,11 @@ public class player43 implements ContestSubmission
             // Check fitness of unknown fuction
             // Double fitness = (double) evaluation_.evaluate(child);
             // Select survivors
-            ArrayList<Individual> possibleSurvivors = new ArrayList<>();
-            possibleSurvivors.addAll(population);
-            possibleSurvivors.addAll(children);
 
-            Collections.sort(possibleSurvivors,
+            Collections.sort(children,
                     Comparator.comparingDouble(Individual::getFitness).reversed());
 
-            population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
+            population = new ArrayList<>(children.subList(0, populationSize));
         }
         System.out.println(runs);
 	}

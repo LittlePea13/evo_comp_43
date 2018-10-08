@@ -6,31 +6,32 @@ public class Mutation{
 
     // test function
     public static void main(String[] args){
+        Random test_r = new Random();
         UniformMutation UM = new UniformMutation();
 //        UM.setUpperBound(5);
 //        UM.setLowerBound(-5);
         Individual ind = new Individual();
         double[] oldgenes = ind.genome;
-        UM.mutate(ind,3);
+        UM.mutate(ind,3, test_r);
         double[] newgenes = ind.genome;
         System.out.println(Arrays.toString(newgenes));
 
         NonUniformMutation NUM = new NonUniformMutation();
         NUM.setUpperBound(5);
         NUM.setLowerBound(-5);
-        NUM.mutate(ind,3);
+        NUM.mutate(ind,3, test_r);
         double[] newgenes2 = ind.genome;
         System.out.println(Arrays.toString(newgenes2));
 
         SingleNonUniformMutation NUMP = new SingleNonUniformMutation();
         NUMP.setPopulation(50);
-        NUMP.mutate(ind,3);
+        NUMP.mutate(ind,3, test_r);
         double[] newgenes3 = ind.genome;
         System.out.println(Arrays.toString(newgenes3));
         System.out.println(ind.sigma);
 
         NStepNonUniformMutation NSUMP = new NStepNonUniformMutation();
-        NSUMP.mutate(ind,3);
+        NSUMP.mutate(ind,3, test_r);
         double[] newgenes4 = ind.genome;
         System.out.println(Arrays.toString(newgenes4));
         System.out.println(Arrays.toString(ind.sigmas));
@@ -58,12 +59,8 @@ public class Mutation{
 }
 
 class UniformMutation extends Mutation{
-    // Discuss if float is correct, or it should be double or something else
-    public void mutate(Individual individual, int index){
+    public void mutate(Individual individual, int index, Random r){
         double[] oldgenes = individual.genome;
-        Random r = new Random();
-        // Does this include the lower and upperbounds? Should it?
-
         double random = lowerBound + r.nextDouble() * (upperBound - lowerBound);
 
         // cloning might not be needed if non-mutated child is removed anyway
@@ -74,9 +71,8 @@ class UniformMutation extends Mutation{
 }
 
 class NonUniformMutation extends Mutation{
-    public void mutate(Individual individual, int index){
+    public void mutate(Individual individual, int index, Random r){
         double[] oldgenes = individual.genome;
-        Random r = new Random();
         double gaussianValue = r.nextGaussian();
         // non-standard mean and std:
         // r.nextGaussain() * std + mean
@@ -96,10 +92,9 @@ class NonUniformMutation extends Mutation{
     }
 }
 class SingleNonUniformMutation extends Mutation{
-    public void mutate(Individual individual, int index){
+    public void mutate(Individual individual, int index, Random r){
         double[] oldgenes = individual.genome;
         double sigma = individual.sigma;
-        Random r = new Random();
         double tau = 1/Math.sqrt(2*size);
         System.out.println(tau);
         double gamma = Math.exp(tau*r.nextGaussian());
@@ -127,10 +122,9 @@ class SingleNonUniformMutation extends Mutation{
 }
 
 class NStepNonUniformMutation extends Mutation{
-    public void mutate(Individual individual, int index){
+    public void mutate(Individual individual, int index, Random r){
         double[] oldgenes = individual.genome;
         double sigma = individual.sigmas[index];
-        Random r = new Random();
         double tau = 1/Math.sqrt(2*size);
         double gamma = Math.exp(tau*r.nextGaussian());
         sigma = sigma*gamma*Math.exp((1/Math.sqrt(2*Math.sqrt(size)))*r.nextGaussian());

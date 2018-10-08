@@ -15,7 +15,7 @@ public class Individual {
                 genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
             }
             for (int i = 0; i < 10; i++) {
-                sigmas[i] = 2;
+                sigmas[i] = 1;
             }
             sigma = 1;
     }

@@ -236,7 +236,7 @@ public class player43 implements ContestSubmission
             double[] weights = LinearRankPop(parents.size(), 1.5);
             // Apply crossover / mutation operators
             WholeArithRecombination crossover = new WholeArithRecombination();
-            NStepNonUniformMutation mutation = new NStepNonUniformMutation();
+            SingleNonUniformMutation mutation = new SingleNonUniformMutation();
             ArrayList<Individual> children = new ArrayList<>();
             for(int i=0; i<populationSize*childrenFactor; i++) {
                 int k = rnd_.nextInt(10);
@@ -254,28 +254,33 @@ public class player43 implements ContestSubmission
                 child.setGenome(child_genome);
                 child.setAllSigmas(parents.get(i).sigmas, parents.get(i).sigmas);
                 child.setSigma(parents.get(i).sigma);
-                if(evals==evaluations_limit_/5){
+                if(evals==evaluations_limit_/6){
                     System.out.println("evaluations_limit_");
-                    double[] sigmas = {1,1,1,1,1,1,1,1,1,1};
-                    child.setAllSigmas(sigmas, sigmas);
+                    double sigma = 1;
+                    child.setSigma(sigma);
+                }
+                if(evals==evaluations_limit_/5){
+                    System.out.println("evaluations_limit_2");
+                    double sigma = 0.5;
+                    child.setSigma(sigma);
                 }
                 if(evals==evaluations_limit_/4){
-                    System.out.println("evaluations_limit_2");
-                    double[] sigmas = {0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1};
-                    child.setAllSigmas(sigmas, sigmas);
+                    System.out.println("evaluations_limit_3");
+                    double sigma = 0.01;
+                    child.setSigma(sigma);
                 }
                 if(evals==evaluations_limit_/3){
                     System.out.println("evaluations_limit_3");
-                    double[] sigmas = {0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001};
-                    child.setAllSigmas(sigmas, sigmas);
+                    double sigma = 0.001;
+                    child.setSigma(sigma);
                 }
                 if(evals==evaluations_limit_/2){
                     System.out.println("evaluations_limit_3");
-                    double[] sigmas = {0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001};
-                    child.setAllSigmas(sigmas, sigmas);
+                    double sigma = 0.00001;
+                    child.setSigma(sigma);
                 }
                 // mutate with prob
-                if (rnd_.nextFloat() < 0.02) {
+                while (rnd_.nextFloat() < 0.9) {
                     int l = rnd_.nextInt(10);
                     /*System.out.println("fitness before");
                     System.out.println(parents.get(i).fitness);
@@ -292,13 +297,8 @@ public class player43 implements ContestSubmission
                 //System.out.println(fitness);
                 children.add(child);
             }
-            //System.out.println(maxfitness);
-            //double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-            // Check fitness of unknown fuction
-            // Double fitness = (double) evaluation_.evaluate(child);
-            // Select survivors
+
             ArrayList<Individual> possibleSurvivors = new ArrayList<>();
-            //possibleSurvivors.addAll(population);
             possibleSurvivors.addAll(children);
 
             Collections.sort(possibleSurvivors,

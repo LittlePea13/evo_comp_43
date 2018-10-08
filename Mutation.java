@@ -96,9 +96,7 @@ class SingleNonUniformMutation extends Mutation{
         double[] oldgenes = individual.genome;
         double sigma = individual.sigma;
         double tau = 1/Math.sqrt(2*size);
-        System.out.println(tau);
         double gamma = Math.exp(tau*r.nextGaussian());
-        System.out.println(gamma);
         sigma = sigma*gamma;
         // set sigma as new sigma for the individual
         double gaussianValue = r.nextGaussian()*sigma;

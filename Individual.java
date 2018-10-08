@@ -15,9 +15,9 @@ public class Individual {
                 genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
             }
             for (int i = 0; i < 10; i++) {
-                sigmas[i] = 3;
+                sigmas[i] = 2;
             }
-            sigma = 3;    
+            sigma = 2;    
     }
     public void setGenome(double[] genome){
         this.genome = genome;
@@ -31,9 +31,16 @@ public class Individual {
     }
 
     public void setSigmas(double sigma, int index){
-        this.sigmas[index] = sigma;
+        if(sigma<3){
+            this.sigmas[index] = sigma;
+        } else {
+            this.sigmas[index] = 2;
+        }
     }
 
+    public void setAllSigmas(double[] sigmas){
+        this.sigmas = sigmas;
+    }
 
     public double getFitness(){
         return fitness;

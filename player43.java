@@ -224,7 +224,6 @@ public class player43 implements ContestSubmission
         int runs = 0;
         while(evals<evaluations_limit_){
             runs++;
-            // parent selection
 
             // sort population based on fitness
             Collections.sort(population,
@@ -254,29 +253,24 @@ public class player43 implements ContestSubmission
                 child.setGenome(child_genome);
                 child.setAllSigmas(parents.get(i).sigmas, parents.get(i).sigmas);
                 child.setSigma(parents.get(i).sigma);
-                if(evals==evaluations_limit_/6){
+                if(evals==evaluations_limit_/5){
                     System.out.println("evaluations_limit_");
                     double sigma = 1;
                     child.setSigma(sigma);
                 }
-                if(evals==evaluations_limit_/5){
-                    System.out.println("evaluations_limit_2");
-                    double sigma = 0.5;
-                    child.setSigma(sigma);
-                }
                 if(evals==evaluations_limit_/4){
                     System.out.println("evaluations_limit_3");
-                    double sigma = 0.01;
+                    double sigma = 0.1;
                     child.setSigma(sigma);
                 }
                 if(evals==evaluations_limit_/3){
                     System.out.println("evaluations_limit_3");
-                    double sigma = 0.001;
+                    double sigma = 0.01;
                     child.setSigma(sigma);
                 }
                 if(evals==evaluations_limit_/2){
                     System.out.println("evaluations_limit_3");
-                    double sigma = 0.00001;
+                    double sigma = 0.001;
                     child.setSigma(sigma);
                 }
                 // mutate with prob

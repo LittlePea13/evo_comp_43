@@ -247,8 +247,12 @@ public class player43 implements ContestSubmission
                 else{
                     child_genome = crossover.recombine(parent2, parent1, k);
                 }
+
+                child.setGenome(child_genome);
+
                 child.setAllSigmas(parents.get(i).sigmas);
                 child.setSigma(parents.get(i).sigma);
+
                 // mutate with prob
                 if (rnd_.nextFloat() < 0.02) {
                     int l = rnd_.nextInt(10);
@@ -267,19 +271,12 @@ public class player43 implements ContestSubmission
             // Check fitness of unknown fuction
             // Double fitness = (double) evaluation_.evaluate(child);
             // Select survivors
-            ArrayList<Individual> possibleSurvivors = new ArrayList<>();
-            //possibleSurvivors.addAll(population);
-            possibleSurvivors.addAll(children);
-            /*
-            Collections.sort(possibleSurvivors,
+
+
+            Collections.sort(children,
                     Comparator.comparingDouble(Individual::getFitness).reversed());
 
-            population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
-            */
-            Collections.sort(children,
-                Comparator.comparingDouble(Individual::getFitness));
-
-            population = StochasticUniversalSampling(children, populationSize);
+            population = new ArrayList<>(children.subList(0, populationSize));
 
         }
         //System.out.println(runs);

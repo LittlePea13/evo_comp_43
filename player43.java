@@ -71,7 +71,7 @@ public class player43 implements ContestSubmission
     // Returns a uniformly distributed double value between 0.0 and 1.0
     public double randUniformPositive() {
         // easiest implementation
-        return rnd_.nextDouble();
+        return new Random().nextDouble();
     }
 
     public ArrayList<Individual> tournament(ArrayList<Individual> population,
@@ -234,12 +234,13 @@ public class player43 implements ContestSubmission
             UniformMutation mutation = new UniformMutation();
             ArrayList<Individual> children = new ArrayList<>();
 
+            Random r = new Random();
             for(int i=0; i<populationSize*2; i++) {
-                int k = rnd_.nextInt(10);
+                int k = r.nextInt(10);
                 Individual child = new Individual();
                 double[] child_genome;
                 double[] parent1 = parents.get(i).genome;
-                double[] parent2 = parents.get(rnd_.nextInt(populationSize*2)).genome;
+                double[] parent2 = parents.get(r.nextInt(populationSize*2)).genome;
                 if(i%2 ==0) {
                     child_genome = crossover.recombine(parent1, parent2, k, rnd_);
                 }
@@ -248,8 +249,10 @@ public class player43 implements ContestSubmission
                 }
                 child.setGenome(child_genome);
 
+                child.setAllSigmas(parents.get(i).sigmas);
+                child.setSigma(parents.get(i).sigma);
                 // mutate with prob
-                if (rnd_.nextFloat() < 0.05) {
+                if (r.nextFloat() < 0.05) {
                     mutation.mutate(child, 2, rnd_);
                 }
                 Double fitness = (double) evaluation_.evaluate(child_genome);

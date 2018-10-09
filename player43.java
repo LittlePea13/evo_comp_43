@@ -15,6 +15,7 @@ public class player43 implements ContestSubmission
 	Random rnd_;
 	ContestEvaluation evaluation_;
     private int evaluations_limit_;
+    private long theseed;
 
 	public player43()
 	{
@@ -24,7 +25,8 @@ public class player43 implements ContestSubmission
 	public void setSeed(long seed)
 	{
 		// Set seed of algortihms random process
-		rnd_.setSeed(seed);
+        rnd_.setSeed(seed);
+        this.theseed = seed;
 	}
 
 	public void setEvaluation(ContestEvaluation evaluation)
@@ -201,16 +203,24 @@ public class player43 implements ContestSubmission
 	public void run()
 	{
         // Run your algorithm here
-
+        // init population
+        int populationSize = 50;
+        int childrenFactor = 1;
+        double mutationRate = 0.01;
+        double startingSigma = 3.0;
         // Currently this is just a toy algorithm, with values, crossover and mutation chosen arbitrarily
+        /*populationSize = Integer.parseInt(System.getProperty("ps"));
+        childrenFactor = Integer.parseInt(System.getProperty("cf"));
+        startingSigma = Double.parseDouble(System.getProperty("startingSigma"));
+        mutationRate = Double.parseDouble(System.getProperty("mutationRate"));
+*/
+        System.out.println(populationSize + " , " + childrenFactor + " , " + startingSigma + " , " + mutationRate + " , " + theseed );
 
         int evals = 0;
         // init population
-        int populationSize = 15;
-        int childrenFactor = 7;
         ArrayList<Individual> population = new ArrayList<>();
         for(int i=0; i<populationSize; i++){
-            Individual ind = new Individual();
+            Individual ind = new Individual(startingSigma);
             population.add(ind);
         }
 
@@ -235,15 +245,20 @@ public class player43 implements ContestSubmission
             double[] weights = LinearRankPop(parents.size(), 1.5);
             // Apply crossover / mutation operators
             WholeArithRecombination crossover = new WholeArithRecombination();
-            SingleNonUniformMutation mutation = new SingleNonUniformMutation();
+            NStepNonUniformMutation mutation = new NStepNonUniformMutation();
+            mutation.size = populationSize;
             ArrayList<Individual> children = new ArrayList<>();
             for(int i=0; i<populationSize*childrenFactor; i++) {
                 int k = rnd_.nextInt(10);
-                Individual child = new Individual();
+                Individual child = new Individual(parents.get(i).sigma);
                 double[] child_genome;
+                int m = rnd_.nextInt(populationSize*childrenFactor);
+                while(m == i){
+                    m = rnd_.nextInt(populationSize*childrenFactor);
+                }
                 double[] parent1 = parents.get(i).genome;
                 //double[] parent2 = parents.get(rouletteSelection(weights)).genome;
-                double[] parent2 = parents.get(rnd_.nextInt(populationSize*childrenFactor)).genome;
+                double[] parent2 = parents.get(m).genome;
                 if(i%2 ==0) {
                     child_genome = crossover.recombine(parent1, parent2, k);
                 }
@@ -253,28 +268,8 @@ public class player43 implements ContestSubmission
                 child.setGenome(child_genome);
                 child.setAllSigmas(parents.get(i).sigmas, parents.get(i).sigmas);
                 child.setSigma(parents.get(i).sigma);
-                if(evals==evaluations_limit_/5){
-                    System.out.println("evaluations_limit_");
-                    double sigma = 1;
-                    child.setSigma(sigma);
-                }
-                if(evals==evaluations_limit_/4){
-                    System.out.println("evaluations_limit_3");
-                    double sigma = 0.1;
-                    child.setSigma(sigma);
-                }
-                if(evals==evaluations_limit_/3){
-                    System.out.println("evaluations_limit_3");
-                    double sigma = 0.01;
-                    child.setSigma(sigma);
-                }
-                if(evals==evaluations_limit_/2){
-                    System.out.println("evaluations_limit_3");
-                    double sigma = 0.001;
-                    child.setSigma(sigma);
-                }
                 // mutate with prob
-                while (rnd_.nextFloat() < 0.9) {
+                if (rnd_.nextFloat() < mutationRate) {
                     int l = rnd_.nextInt(10);
                     /*System.out.println("fitness before");
                     System.out.println(parents.get(i).fitness);

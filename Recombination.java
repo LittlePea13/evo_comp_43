@@ -45,9 +45,13 @@ public class Recombination{
 
     // Stuff that is true for all recombinations
     public int genomeSize = 10;
+    public double scaling_factor = 0.75;
 
     public void setGenomeSize(int size){
         genomeSize = size;
+    }
+    public void setScalingFactor(double factor){
+        scaling_factor = factor;
     }
 
 }
@@ -93,6 +97,24 @@ class WholeArithRecombination extends Recombination{
         double[] child = new double[genomeSize];
         for (int i=0; i<genomeSize; i++){
             child[i] = (parentA[i]+parentB[i])/2;
+        }
+        return child;
+    }
+}
+
+class DiferentialRecombination extends Recombination{
+    public double[] recombine(double[] parentA, double[] parentB, int k){
+        Random r = new Random();
+        double[] child = new double[genomeSize];
+        for (int i = 0; i < genomeSize; i++) {
+            if (r.nextBoolean()) {
+                child[i] = parentA[i];
+            }
+            else {
+                child[i] = parentB[i];
+            }
+
+            child[i] = child[i] + ((parentA[i] - parentB[i]) * scaling_factor);
         }
         return child;
     }

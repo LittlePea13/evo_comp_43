@@ -7,7 +7,7 @@ public class Individual {
     double sigma;
     double[] sigmas = new double[10];
 
-    public Individual() {
+    public Individual(double startingSigma) {
         int leftLimit = -5;
         int rightLimit = 5;
         Random rand = new Random();
@@ -15,9 +15,9 @@ public class Individual {
                 genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
             }
             for (int i = 0; i < 10; i++) {
-                sigmas[i] = 5;
+                sigmas[i] = startingSigma*(rand.nextDouble() - 0.5);
             }
-            sigma = 3;
+            sigma = startingSigma*(rand.nextDouble() - 0.5);
     }
     public void setGenome(double[] genome){
         this.genome = genome;

@@ -9,7 +9,7 @@ public class Mutation{
         UniformMutation UM = new UniformMutation();
 //        UM.setUpperBound(5);
 //        UM.setLowerBound(-5);
-        Individual ind = new Individual();
+        Individual ind = new Individual(5);
         double[] oldgenes = ind.genome;
         UM.mutate(ind,3);
         double[] newgenes = ind.genome;
@@ -132,8 +132,6 @@ class NStepNonUniformMutation extends Mutation{
         double tau = 1/Math.sqrt(2*size);
         double gamma = Math.exp(tau*r.nextGaussian());
         sigma = sigma*gamma*Math.exp((1/Math.sqrt(2*Math.sqrt(size)))*r.nextGaussian());
-        //System.out.println(sigma);
-        // set sigma as new sigma for the individual for gene i
 
         double gaussianValue = r.nextGaussian()*sigma;
 

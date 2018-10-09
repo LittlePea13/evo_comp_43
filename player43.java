@@ -71,7 +71,7 @@ public class player43 implements ContestSubmission
     // Returns a uniformly distributed double value between 0.0 and 1.0
     public double randUniformPositive() {
         // easiest implementation
-        return new Random().nextDouble();
+        return rnd_.nextDouble();
     }
 
     public ArrayList<Individual> tournament(ArrayList<Individual> population,
@@ -206,7 +206,8 @@ public class player43 implements ContestSubmission
 
         int evals = 0;
         // init population
-        int populationSize = 30;
+        int populationSize = 15;
+        int childrenFactor = 7;
         ArrayList<Individual> population = new ArrayList<>();
         for(int i=0; i<populationSize; i++){
             Individual ind = new Individual();
@@ -228,48 +229,90 @@ public class player43 implements ContestSubmission
             // sort population based on fitness
             Collections.sort(population,
                     Comparator.comparingDouble(Individual::getFitness));
-            ArrayList<Individual> parents = StochasticUniversalSampling(population, populationSize*2);
+            ArrayList<Individual> parents = StochasticUniversalSampling(population, populationSize*childrenFactor);
+            // sort parents based on fitness
+            Collections.sort(parents,
+                    Comparator.comparingDouble(Individual::getFitness));
+            double[] weights = LinearRankPop(parents.size(), 1.5);
             // Apply crossover / mutation operators
-            SimpleArithRecombination crossover = new SimpleArithRecombination();
-            UniformMutation mutation = new UniformMutation();
+            WholeArithRecombination crossover = new WholeArithRecombination();
+            SingleNonUniformMutation mutation = new SingleNonUniformMutation();
             ArrayList<Individual> children = new ArrayList<>();
-
-            Random r = new Random();
-            for(int i=0; i<populationSize*2; i++) {
-                int k = r.nextInt(10);
+            for(int i=0; i<populationSize*childrenFactor; i++) {
+                int k = rnd_.nextInt(10);
                 Individual child = new Individual();
                 double[] child_genome;
                 double[] parent1 = parents.get(i).genome;
-                double[] parent2 = parents.get(r.nextInt(populationSize*2)).genome;
+                //double[] parent2 = parents.get(rouletteSelection(weights)).genome;
+                double[] parent2 = parents.get(rnd_.nextInt(populationSize*childrenFactor)).genome;
                 if(i%2 ==0) {
-                    child_genome = crossover.recombine(parent1, parent2, k, rnd_);
+                    child_genome = crossover.recombine(parent1, parent2, k);
                 }
                 else{
-                    child_genome = crossover.recombine(parent2, parent1, k, rnd_);
+                    child_genome = crossover.recombine(parent2, parent1, k);
                 }
                 child.setGenome(child_genome);
-
-                child.setAllSigmas(parents.get(i).sigmas);
+                child.setAllSigmas(parents.get(i).sigmas, parents.get(i).sigmas);
                 child.setSigma(parents.get(i).sigma);
-                // mutate with prob
-                if (r.nextFloat() < 0.05) {
-                    mutation.mutate(child, 2, rnd_);
+                if(evals==evaluations_limit_/6){
+                    System.out.println("evaluations_limit_");
+                    double sigma = 1;
+                    child.setSigma(sigma);
                 }
-                Double fitness = (double) evaluation_.evaluate(child_genome);
+                if(evals==evaluations_limit_/5){
+                    System.out.println("evaluations_limit_2");
+                    double sigma = 0.5;
+                    child.setSigma(sigma);
+                }
+                if(evals==evaluations_limit_/4){
+                    System.out.println("evaluations_limit_3");
+                    double sigma = 0.01;
+                    child.setSigma(sigma);
+                }
+                if(evals==evaluations_limit_/3){
+                    System.out.println("evaluations_limit_3");
+                    double sigma = 0.001;
+                    child.setSigma(sigma);
+                }
+                if(evals==evaluations_limit_/2){
+                    System.out.println("evaluations_limit_3");
+                    double sigma = 0.00001;
+                    child.setSigma(sigma);
+                }
+                // mutate with prob
+                while (rnd_.nextFloat() < 0.9) {
+                    int l = rnd_.nextInt(10);
+                    /*System.out.println("fitness before");
+                    System.out.println(parents.get(i).fitness);
+                    System.out.println("before");
+                    System.out.println(Arrays.toString(child.sigmas));*/
+                    //System.out.println(child.sigma);
+                    mutation.mutate(child, l);
+                    //System.out.println(child.sigma);
+                    //System.out.println(Arrays.toString(child.sigmas));
+                }
+                Double fitness = (double) evaluation_.evaluate(child.genome);
                 evals++;
                 child.setFitness(fitness);
+                //System.out.println(fitness);
                 children.add(child);
             }
-            //double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-            // Check fitness of unknown fuction
-            // Double fitness = (double) evaluation_.evaluate(child);
-            // Select survivors
 
-            Collections.sort(children,
+            ArrayList<Individual> possibleSurvivors = new ArrayList<>();
+            possibleSurvivors.addAll(children);
+
+            Collections.sort(possibleSurvivors,
                     Comparator.comparingDouble(Individual::getFitness).reversed());
 
-            population = new ArrayList<>(children.subList(0, populationSize));
+            population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
+            
+            /*
+            Collections.sort(children,
+                Comparator.comparingDouble(Individual::getFitness));
+
+            population = tournament(children, 0.3,populationSize);
+*/
         }
-        System.out.println(runs);
+        //System.out.println(runs);
 	}
 }

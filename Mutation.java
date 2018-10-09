@@ -126,6 +126,7 @@ class NStepNonUniformMutation extends Mutation{
         double tau = 1/Math.sqrt(2*size);
         double gamma = Math.exp(tau*r.nextGaussian());
         sigma = sigma*gamma*Math.exp((1/Math.sqrt(2*Math.sqrt(size)))*r.nextGaussian());
+        //System.out.println(sigma);
         // set sigma as new sigma for the individual for gene i
 
         double gaussianValue = r.nextGaussian()*sigma;

@@ -97,3 +97,27 @@ class WholeArithRecombination extends Recombination{
         return child;
     }
 }
+
+class BlendRecombination extends Recombination{
+    public double[] recombine(double[] parentA, double[] parentB, int k, Random r){
+        double a = 0.5;
+        double[] child = new double[genomeSize];
+        double min;
+        double max;
+        double range;
+        for (int i=0; i<genomeSize; i++){
+            if(parentA[i] < parentB[i]){
+                min = parentA[i];
+                max = parentB[i];
+                range = max-min;
+            }
+            else{
+                max = parentA[i];
+                min = parentB[i];
+                range = max-min;
+            }
+            child[i] = (min-range*a) + r.nextDouble() * (max+range*a);
+        }
+        return child;
+    }
+}

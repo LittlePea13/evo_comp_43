@@ -38,7 +38,8 @@ public class player43 implements ContestSubmission
         evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
 		// Property keys depend on specific evaluation
 		// E.g. double param = Double.parseDouble(props.getProperty("property_name"));
-        boolean isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
+        boolean isMultimodal
+                = Boolean.parseBoolean(props.getProperty("Multimodal"));
         boolean hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
         boolean isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
 
@@ -200,26 +201,27 @@ public class player43 implements ContestSubmission
 
 	public void run()
 	{
-        // Run your algorithm here
-
-        // Currently this is just a toy algorithm, with values, crossover and mutation chosen arbitrarily
-
+	    // init properties
         int evals = 0;
-        // init population
         int populationSize = 15;
         int childrenFactor = 7;
+        WholeArithRecombination crossover = new WholeArithRecombination();
+        SingleNonUniformMutation mutation = new SingleNonUniformMutation();
+        // init population
+
         ArrayList<Individual> population = new ArrayList<>();
         for(int i=0; i<populationSize; i++){
             Individual ind = new Individual();
             population.add(ind);
         }
 
+
         for(Individual ind : population){
             ind.fitness = (double) evaluation_.evaluate(ind.genome);
             evals++;
         }
 
-        evaluations_limit_ = evaluations_limit_ - populationSize;
+        evaluations_limit_ = evaluations_limit_ - populationSize*childrenFactor;
         // - populationSize to make sure it doesn't go over limit during while loop
         int runs = 0;
         while(evals<evaluations_limit_){
@@ -235,8 +237,7 @@ public class player43 implements ContestSubmission
                     Comparator.comparingDouble(Individual::getFitness));
             double[] weights = LinearRankPop(parents.size(), 1.5);
             // Apply crossover / mutation operators
-            WholeArithRecombination crossover = new WholeArithRecombination();
-            SingleNonUniformMutation mutation = new SingleNonUniformMutation();
+
             ArrayList<Individual> children = new ArrayList<>();
             for(int i=0; i<populationSize*childrenFactor; i++) {
                 int k = rnd_.nextInt(10);
@@ -244,15 +245,20 @@ public class player43 implements ContestSubmission
                 double[] child_genome;
                 double[] parent1 = parents.get(i).genome;
                 //double[] parent2 = parents.get(rouletteSelection(weights)).genome;
-                double[] parent2 = parents.get(rnd_.nextInt(populationSize*childrenFactor)).genome;
+                int j = rnd_.nextInt(populationSize*childrenFactor);
+//                int j = i+1;
+//                if(j==populationSize*childrenFactor){
+//                   j = 0;
+//                }
+                double[] parent2 = parents.get(j).genome;
                 if(i%2 ==0) {
-                    child_genome = crossover.recombine(parent1, parent2, k);
+                    child_genome = crossover.recombine(parent1, parent2, k, rnd_);
                 }
                 else{
-                    child_genome = crossover.recombine(parent2, parent1, k);
+                    child_genome = crossover.recombine(parent2, parent1, k, rnd_);
                 }
                 child.setGenome(child_genome);
-                child.setAllSigmas(parents.get(i).sigmas, parents.get(i).sigmas);
+                child.setAllSigmas(parents.get(i).sigmas, parents.get(j).sigmas);
                 child.setSigma(parents.get(i).sigma);
                 if(evals==evaluations_limit_/6){
                     System.out.println("evaluations_limit_");
@@ -280,14 +286,14 @@ public class player43 implements ContestSubmission
                     child.setSigma(sigma);
                 }
                 // mutate with prob
-                while (rnd_.nextFloat() < 0.9) {
+                if (rnd_.nextFloat() < 0.1) {
                     int l = rnd_.nextInt(10);
                     /*System.out.println("fitness before");
                     System.out.println(parents.get(i).fitness);
                     System.out.println("before");
                     System.out.println(Arrays.toString(child.sigmas));*/
                     //System.out.println(child.sigma);
-                    mutation.mutate(child, l);
+                    mutation.mutate(child, l, rnd_);
                     //System.out.println(child.sigma);
                     //System.out.println(Arrays.toString(child.sigmas));
                 }
@@ -299,12 +305,14 @@ public class player43 implements ContestSubmission
             }
 
             ArrayList<Individual> possibleSurvivors = new ArrayList<>();
+            //possibleSurvivors.addAll(population);
             possibleSurvivors.addAll(children);
 
             Collections.sort(possibleSurvivors,
                     Comparator.comparingDouble(Individual::getFitness).reversed());
 
             population = new ArrayList<>(possibleSurvivors.subList(0, populationSize));
+
             
             /*
             Collections.sort(children,
@@ -313,6 +321,5 @@ public class player43 implements ContestSubmission
             population = tournament(children, 0.3,populationSize);
 */
         }
-        //System.out.println(runs);
 	}
 }

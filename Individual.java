@@ -1,6 +1,6 @@
 
 import java.util.Random;
-import org.apache.commons.math3.distribution.NormalDistribution;
+//import org.apache.commons.math3.distribution.NormalDistribution;
 
 public class Individual {
     double[] genome = new double[10];
@@ -17,9 +17,10 @@ public class Individual {
        //double leftLimit = -5;
        //double rightLimit = 5;
 
-       NormalDistribution dist = new NormalDistribution(0,2.5);
+       //NormalDistribution dist = new NormalDistribution(0,2.5);
             for (int i = 0; i < 10; i++) {
                 //this.genome[i] = dist.sample();
+                //this.genome[i] = rand.nextGaussian()*2.5;
                 this.genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
             }
             for (int i = 0; i < 10; i++) {

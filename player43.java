@@ -224,16 +224,16 @@ public class player43 implements ContestSubmission
 */      if(hasStructure){
             populationSize = 600;
             childrenFactor = 60;
-            mutationRate = 1;
+            mutationRate = 0.9;
             startingSigma = 1;
             mutation_step = 0.00000000000000001;
             tournamentSelection_slice = 30;
         } else {
-            populationSize = 1200;
+            populationSize = 1000;
             childrenFactor = 40;
-            mutationRate = 0.02;
+            mutationRate = 0.3;
             startingSigma = 0.0001;
-            mutation_step = 0.000000000001;
+            mutation_step = 1;
             tournamentSelection_slice = 30;
         }
     }
@@ -246,8 +246,8 @@ public class player43 implements ContestSubmission
         tournamentSelection_slice = Integer.parseInt(System.getProperty("slice"));
     }
 
-       // System.out.println(populationSize + " , " + childrenFactor + " , " + startingSigma + " , " + mutationRate + " , " + mutation_step + " , " + tournamentSelection_slice + " , " + theseed );
-       System.out.println("generations" + " , " + "best_fitness" + " , " + "time_elapsed");
+      // System.out.println(populationSize + " , " + childrenFactor + " , " + startingSigma + " , " + mutationRate + " , " + mutation_step + " , " + tournamentSelection_slice + " , " + theseed );
+       //System.out.println("generations" + " , " + "best_fitness" + " , " + "time_elapsed");
         if(oppositeIndividuals){
             for(int i=0; i<populationSize/2; i++){
                 Individual ind = new Individual(startingSigma,rnd_, -5, 5);
@@ -328,11 +328,11 @@ public class player43 implements ContestSubmission
 
             if (isMultimodal){
                 if(hasStructure){
-                    mutation = new CauchyMutation();
+                    mutation = new SingleNonUniformMutation();
                     mutation.SetMutation_step(mutation_step);
                 } else {
-                    mutation = new CorrelatedMutation();
-                    mutation.SetMutation_step(mutation_step);
+                    mutation = new CauchyMutation();
+                    mutation.SetMutation_step(mutation_step/runs);
                 }
             } else {
                 mutation = new NStepNonUniformMutation();
@@ -380,7 +380,7 @@ public class player43 implements ContestSubmission
                         population.get(parents_positions[1]), 
                         population.get(parents_positions[2]), 
                         population.get(parents_positions[3]), 
-                        0.9);
+                        0.8);
                         i += 4;
                     }
                 }
@@ -411,7 +411,7 @@ public class player43 implements ContestSubmission
             }*/
             long currentTime = System.currentTimeMillis();
             double elapsedTime = (currentTime - previousTime) / 1000.0;
-           System.out.println(generations + " , " + best_inGen + "," + elapsedTime);
+          //System.out.println(generations + " , " + best_inGen + "," + elapsedTime);
            // System.out.println(stuck_count);
         }
         //System.out.println(generations);

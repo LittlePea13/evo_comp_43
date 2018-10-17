@@ -119,3 +119,20 @@ class DiferentialRecombination extends Recombination{
         return child;
     }
 }
+class DiferentialFourRecombination extends Recombination{
+    public double[] recombine(double[] parentA, double[] parentB,double[] parentC,double[] parentD, int k){
+        Random r = new Random();
+        double[] child = new double[genomeSize];
+        for (int i = 0; i < genomeSize; i++) {
+            if (r.nextBoolean()) {
+                child[i] = parentA[i];
+            }
+            else {
+                child[i] = parentB[i];
+            }
+
+            child[i] = child[i] + ((parentA[i] - parentB[i]) * scaling_factor);
+        }
+        return child;
+    }
+}

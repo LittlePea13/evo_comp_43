@@ -25,9 +25,6 @@ public class player43 implements ContestSubmission
 
 	public void setSeed(long seed)
 	{
-		// Set seed of algortihms random process
-        //rnd_.setSeed(rnd_.nextInt(5));
-        //this.theseed = rnd_.nextInt(5);
         rnd_.setSeed(seed);
         this.theseed = seed;
 	}
@@ -66,8 +63,6 @@ public class player43 implements ContestSubmission
     private int evals = 0;
     private ArrayList<Individual> population = new ArrayList<>();
     private ArrayList<Individual> children = new ArrayList<>();
-    private double last_fitness=0;
-    private int same_fitness = 0;
     int generations = 0;
     Individual best_Individual;
 
@@ -249,7 +244,6 @@ public class player43 implements ContestSubmission
             } else {
                 parents = tournamentInts(childrenFactor, tournamentSelection_cut);
             }
-            same_fitness = 0;
 
             WholeArithRecombination crossover = new WholeArithRecombination();
             SimpleArithRecombination crossover2 = new SimpleArithRecombination();
@@ -429,12 +423,12 @@ public class player43 implements ContestSubmission
             double fitness = 0;
             int[] candidates = new int[cut];
             boolean selected = false;
-            double best_fit = 0;
+            double best_ind = 0;
             for (int i = 0; i < cut; i++) {
                 candidates[i] = rnd_.nextInt(population.size());
                 fitness = population.get(candidates[i]).getFitness();
-                if (fitness > best_fit && fitness > 0) {
-                    best_fit = fitness;
+                if (fitness > best_ind && fitness > 0) {
+                    best_ind = fitness;
                     candidate = candidates[i];
                 }
             }

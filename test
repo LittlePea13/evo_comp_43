@@ -1,5 +1,5 @@
 #!/bin/bash
-javac -cp contest.jar:lib/commons.jar player43.java Individual.java Mutation.java Recombination.java Sampler.java AdaptiveRandomness.java
+javac -cp contest.jar player43.java Individual.java Mutation.java Recombination.java Sampler.java AdaptiveRandomness.java
 jar cmf MainClass.txt submission.jar player43.class Individual.class Mutation.class Recombination.class WholeArithRecombination.class SingleNonUniformMutation.class NStepNonUniformMutation.class RouletteSampling.class Sampler.class CauchyMutation.class SimpleArithRecombination.class AdaptiveRandomness.class
 
 # java -jar testrun.jar -submission=player13  -evaluation=SphereEvaluation -seed=0 #hasStructure and isSeparable

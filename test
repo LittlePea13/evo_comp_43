@@ -1,6 +1,6 @@
 #!/bin/bash
-javac -cp contest.jar player43.java Individual.java Mutation.java Recombination.java
-jar cmf MainClass.txt submission.jar player43.class Individual.class Mutation.class Recombination.class WholeArithRecombination.class SingleNonUniformMutation.class
+javac -cp contest.jar:lib/commons.jar player43.java Individual.java Mutation.java Recombination.java Sampler.java AdaptiveRandomness.java
+jar cmf MainClass.txt submission.jar player43.class Individual.class Mutation.class Recombination.class WholeArithRecombination.class SingleNonUniformMutation.class NStepNonUniformMutation.class RouletteSampling.class Sampler.class CauchyMutation.class SimpleArithRecombination.class AdaptiveRandomness.class
 
 # java -jar testrun.jar -submission=player13  -evaluation=SphereEvaluation -seed=0 #hasStructure and isSeparable
 # java -jar testrun.jar -submission=player13  -evaluation=BentCigarFunction -seed=0
@@ -19,29 +19,82 @@ jar cmf MainClass.txt submission.jar player43.class Individual.class Mutation.cl
      #echo KatsuuraEvaluation
      #java -jar testrun.jar -submission=player13  -evaluation=KatsuuraEvaluation -seed=$COUNTER #   isMultimodal
  #done
-
-
-
 declare -a populationSize=(
-"15" "30" "50" "100"
+"10" "15" "20"
 )
 declare -a childrenFactor=(
-"1" "2" "5" "7" 
+"2" "4" "6"
 )
 declare -a startingSigma=(
-"10" "5" "4" "3" "2" "1" "0.5" "0.1"
+"3.5" "3" "2.5" "1"
 )
 declare -a mutationRate=(
-"0.9" "0.8" "0.7" "0.1" "0.0001" 
+"0.55" "0.5" "0.45"
+)
+declare -a mutation_step=(
+"0.0000001" "0.00000001" "0.000000001"
+)
+declare -a tournamentSelection_cut=(
+"2"
+)
+declare -a race_limit=(
+"1" "1" "1" "1"
+)
+
+declare -a populationSize=(
+"1200"
+)
+declare -a childrenFactor=(
+"40"
+)
+declare -a startingSigma=(
+"0.001"
+)
+declare -a mutationRate=(
+"1"
+)
+declare -a mutation_step=(
+"0.00000000000001"
+)
+declare -a tournamentSelection_cut=(
+"30"
 )
 declare -a race_limit=(
 "1"
 )
+#beeeest schaffers
+#600 , 60 , 1.0 , 1.0 , 1.0E-16 , 30 , 19
+#700 , 60 , 1.0 , 1.0 , 1.0E-17 , 30 , 4
+#700 , 60 , 1.0 , 1.0 , 1.0E-17 , 30 , 3
+# 800 , 60 , 1.0 , 1.0 , 1.0E-20 , 30 , 0
+
+#800 , 60 , 1.0 , 1.0 , 1.0E-20 , 30 , 19
+#700 , 60 , 1.0 , 1.0 , 1.0E-20 , 30 , 7
+
+
+# 24 , 2 , 2.5 , 0.5 , 1.0E-9 , 2 , 0
+#25 , 2 , 3.0 , 0.5 , 1.0E-9 , 2 , 0
+
 
 # {1002} & {40, 8} & {0.1} & {0.01, 1, 1} & {$10^{-6}$} & {1} & {9.999999992} & {190}\\
 # {10} & {10, 4} & {0.1} & {1, 1, 1} & {0.001} & {1} & {9.999999994} & {153}\\
 
 #300 , 1.0 , 1.0E-9 , 40 , 1.0E-15 , 4 , 1 , 0
+
+# Schaffers
+# 500 , 50 , 5.0 , 1.0 , 1.0E-8 , 1 , 0
+# 500 , 60 , 5.0 , 1.0 , 1.0E-12 , 30 , 1 , 0
+# 500 , 60 , 5.0 , 1.0 , 1.0E-12 , 30 , 1 , 0
+# 500 , 60 , 5.0 , 1.0 , 1.0E-12 , 30 , 1 , 0
+# 500 , 60 , 5.0 , 1.0 , 1.0E-12 , 30 , 1 , 0
+
+
+
+
+# Bent 
+# 20 , 10 , 3.0 , 0.5 , 1.0E-6 , 1 , 0
+
+
 
 
 for ps in "${populationSize[@]}"
@@ -52,20 +105,29 @@ do
         do
             for mutationRate in "${mutationRate[@]}"
             do
-                    echo "------------------------------------------------------------------------------------------------------"
-                        for race in "${race_limit[@]}"
-                        do
-                            COUNTER=1
-                            until [  $COUNTER -lt 1 ];
+                for mutation_step in "${mutation_step[@]}"
+                do
+                    for cut in "${tournamentSelection_cut[@]}"
+                    do
+                        echo "------------------------------------------------------------------------------------------------------"
+                            for race in "${race_limit[@]}"
                             do
-                                let COUNTER-=1
-                                #java -Dps=$ps -Dmutchance=$mutchance -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Drace=$race -jar testrun.jar -submission=player43  -evaluation=BentCigarFunction -seed=$COUNTER
-                                #java -Dps=$ps -Dmutchance=$mutchance -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Drace=$race -jar testrun.jar -submission=player43  -evaluation=SchaffersEvaluation -seed=$COUNTER
-                                java -Dps=$ps -Dmutchance=$mutchance -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Drace=$race -jar testrun.jar -submission=player43  -evaluation=KatsuuraEvaluation -seed=$COUNTER
+                                COUNTER=100
+                                until [  $COUNTER -lt 1 ];
+                                do
+                                    let COUNTER-=1
+                                    #java -Dbulk=true -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=BentCigarFunction -seed=$COUNTER
+                                    #java -Dbulk=true -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=SchaffersEvaluation -seed=$COUNTER
+                                    #java -Dbulk=true -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=KatsuuraEvaluation -seed=$COUNTER
+                                    #java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=SchaffersEvaluation -seed=$COUNTER > SchaffersFio/SchaffersGauss$COUNTER.csv
+                                    #java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=KatsuuraEvaluation -seed=$COUNTER > KatsuuraFio/KatsuuraGauss$COUNTER.csv
+                                    java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=BentCigarFunction -seed=$COUNTER > BentCigarFio/BentCigarGauss$COUNTER.csv
+                                done
                             done
                         done
+                    done
+                done
             done
         done
     done
-
 done

@@ -8,20 +8,19 @@ public class Individual {
     double sigma;
     double[] sigmas = new double[10];
     double[] alphas = new double[10*9/2];;
-    boolean evaluated = false;
+    boolean hasFitness = false;
     double leftLimit = -0.5;
     double rightLimit = 1.5;
-    public Individual[] parents = new Individual[4];
 
     public Individual(double startingSigma, Random rand) {
        //double leftLimit = -5;
        //double rightLimit = 5;
 
-       //NormalDistribution dist = new NormalDistribution(0,2.5);
+      // NormalDistribution dist = new NormalDistribution(0,2.5);
             for (int i = 0; i < 10; i++) {
                 //this.genome[i] = dist.sample();
-                //this.genome[i] = rand.nextGaussian()*2.5;
-                this.genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
+                this.genome[i] = rand.nextGaussian()*2.5;
+                //this.genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
             }
             for (int i = 0; i < 10; i++) {
                 this.sigmas[i] = startingSigma*(rand.nextGaussian());
@@ -72,11 +71,11 @@ public class Individual {
             sigmas[i] = (sigmas1[i]+sigmas2[i])/2;
         }
     }
-    public void setEvaluated(boolean evaluated) {
-        this.evaluated = evaluated;
+    public void setEvaluated(boolean hasFitness) {
+        this.hasFitness = hasFitness;
     }
     public boolean isEvaluated() {
-        return evaluated;
+        return hasFitness;
     }
     public double getFitness(){
         return fitness;

@@ -19,7 +19,6 @@ public class player43 implements ContestSubmission
 
 	public player43()
 	{
-        System.setSecurityManager(null);
 		rnd_ = new Random();
 	}
 

@@ -19,8 +19,8 @@ public class Individual {
       // NormalDistribution dist = new NormalDistribution(0,2.5);
             for (int i = 0; i < 10; i++) {
                 //this.genome[i] = dist.sample();
-                this.genome[i] = rand.nextGaussian()*2.5;
-                //this.genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
+                //this.genome[i] = rand.nextGaussian()*2.5;
+                this.genome[i] = leftLimit + rand.nextDouble() * (rightLimit - leftLimit);
             }
             for (int i = 0; i < 10; i++) {
                 this.sigmas[i] = startingSigma*(rand.nextGaussian());

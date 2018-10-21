@@ -120,8 +120,8 @@ do
                                     #java -Dbulk=true -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=SchaffersEvaluation -seed=$COUNTER
                                     #java -Dbulk=true -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=KatsuuraEvaluation -seed=$COUNTER
                                     #java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=SchaffersEvaluation -seed=$COUNTER > SchaffersFio/SchaffersGauss$COUNTER.csv
-                                    #java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=KatsuuraEvaluation -seed=$COUNTER > KatsuuraFio/KatsuuraGauss$COUNTER.csv
-                                    java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=BentCigarFunction -seed=$COUNTER > BentCigarFio/BentCigarGauss$COUNTER.csv
+                                    java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=KatsuuraEvaluation -seed=$COUNTER > KatsuuraFio/KatsuuraGauss$COUNTER.csv
+                                    #java -Dbulk=false -Dps=$ps -Dmutation_step=$mutation_step -Dcf=$cf -DstartingSigma=$sigma -DmutationRate=$mutationRate -Dcut=$cut -jar testrun.jar -submission=player43  -evaluation=BentCigarFunction -seed=$COUNTER > BentCigarFio/BentCigarGauss$COUNTER.csv
                                 done
                             done
                         done
